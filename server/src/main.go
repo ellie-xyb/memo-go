@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -50,7 +51,7 @@ func (s *Server) CreateMemo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) ListMemos(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "Get" {
+	if r.Method != "GET" {
 		http.Error(w, "Not found", 404)
 		return
 	}
@@ -61,4 +62,22 @@ func (s *Server) ListMemos(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to list memos", 500)
 		return
 	}
+}
+
+func (s *Server) Run() {
+	s.RegisterRoutes()
+
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		// log a error message and kill the program
+		log.Fatal(err)
+	}
+}
+
+func main() {
+	server := Server{
+		// give a empty {} when you create a new struct instance
+		db: Db{},
+	}
+
+	server.Run()
 }
