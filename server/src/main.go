@@ -48,3 +48,17 @@ func (s *Server) CreateMemo(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Memo created")
 }
+
+func (s *Server) ListMemos(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "Get" {
+		http.Error(w, "Not found", 404)
+		return
+	}
+
+	err := json.NewEncoder(w).Encode(s.db.Posts)
+
+	if err != nil {
+		http.Error(w, "Unable to list memos", 500)
+		return
+	}
+}
